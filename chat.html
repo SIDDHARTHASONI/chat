@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Chat Bot</title>
+	<style>
+		/* Add your CSS styles here */
+	</style>
+</head>
+<body>
+	<div class="chat-container">
+		<div class="chat-header">
+			<h1>My Chat Bot</h1>
+		</div>
+		<div class="chat-body">
+			<ul class="chat-list">
+				<li class="chat-item bot-message">Hello! How can I assist you today?</li>
+			</ul>
+			<div class="chat-input">
+				<input type="text" id="message-input" placeholder="Type your message...">
+				<button id="send-button">Send</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+	<script>
+		// Initialize the Dialogflow Messenger
+		DialogflowMessenger.init({
+		  dfMessengerLoaded: function() {
+		    // Dialogflow Messenger has been loaded
+		    DialogflowMessenger.setChatbotAgent('YOUR_AGENT_ID_HERE');
+		    DialogflowMessenger.setWebhook({
+		      'uri': 'YOUR_WEBHOOK_URL_HERE',
+		      'send': true,
+		      'messageFormat': 'PROTO'
+		    });
+		  }
+		});
+
+		// Send user's message to Dialogflow and display response
+		function sendMessage() {
+			var message = document.getElementById('message-input').value;
+			if (message.trim() != '') {
+				var chatList = document.querySelector('.chat-list');
+				var userMessage = document.createElement('li');
+				userMessage.classList.add('chat-item', 'user-message');
+				userMessage.innerText = message;
+				chatList.appendChild(userMessage);
+				document.getElementById('message-input').value = '';
+
+				DialogflowMessenger.sendText(message);
+			}
+		}
+
+		// Listen for the send button click event
+		document.getElementById('send-button').addEventListener('click', sendMessage);
+
+		// Listen for the Enter key press event
+		document.getElementById('message-input').addEventListener('keyup', function(event) {
+			if (event.keyCode === 13) {
+				sendMessage();
+			}
+		});
+	</script>
+</body>
+</html>
